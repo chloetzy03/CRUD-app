@@ -66,7 +66,14 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //MARK: - Actions
     @objc private func addButtonTapped(){
-        print("Add button tapped")
+        // No excuse passed -> the form is in "add" mode
+        let formVC = ExcuseFormViewController()
+        
+        // Wrap in a navigation controller so the form gets its own top bar (Cancel/Save)
+        let navController = UINavigationController(rootViewController: formVC)
+        
+        // slide up modally over the current screen
+        present(navController, animated: true)
     }
     
     // MARK: - UITableViewDataSource

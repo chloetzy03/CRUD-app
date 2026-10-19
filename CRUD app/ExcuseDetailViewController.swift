@@ -43,7 +43,10 @@ class ExcuseDetailViewController: UITableViewController {
 
     //MARK: - Actions
     @objc func editTapped(){
-        print("edit tapped")
+        // Pass the excuse -> the form is in "edit" mode.
+        let formVC = ExcuseFormViewController(excuse: excuse)
+        let navController = UINavigationController(rootViewController: formVC)
+        present(navController, animated: true)
     }
     
     
@@ -53,7 +56,7 @@ class ExcuseDetailViewController: UITableViewController {
         return 2
     }
     
-    // Rows per group: Information has 3 (activity, reason, date), Stats has 1 (validity).
+    // Rows per group: Information has 3 (activity, reason, date), Stats has 1 (validity)
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? 3 : 1
     }
