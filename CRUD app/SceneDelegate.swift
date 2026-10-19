@@ -18,7 +18,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = ViewController()
+        //create home screen
+        let listVC = ListViewController()
+        //wrap in navigation controller, gives the top bar and lets us push screens
+        let navController = UINavigationController(rootViewController: listVC)
+        //Make the navigation controller the first thing shown.
+        window?.rootViewController = navController
+        //show the window
         window?.makeKeyAndVisible()
     }
 
