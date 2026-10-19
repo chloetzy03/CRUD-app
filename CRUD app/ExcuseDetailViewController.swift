@@ -9,81 +9,85 @@ import UIKit
 
 class ExcuseDetailViewController: UITableViewController {
 
+    //MARK: - properties
+    private let excuse: Excuse
+    
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
+    
+    //MARK: initialisers
+    init(excuse: Excuse) {
+        self.excuse = excuse //store it first
+        super.init(style: .insetGrouped) //then let uikit set up the table
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        title = "Details"
+        
+        //edit button on the top right
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .edit,
+            target: self,
+            action: #selector(editTapped)
+        )
     }
 
+    //MARK: - Actions
+    @objc func editTapped(){
+        print("edit tapped")
+    }
+    
+    
     // MARK: - Table view data source
-
+    // Two groups: "Information" and "Stats"
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 2
     }
-
+    
+    // Rows per group: Information has 3 (activity, reason, date), Stats has 1 (validity).
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return section == 0 ? 3 : 1
     }
 
-    /*
+    // The grey heading above each group.
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return section == 0 ? "Information" : "Stats"
+    }
+    
+    // Build each row.
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        // .value1 style = label on the left, value on the right (like the Settings app).
+        // The rows are fixed, so we don't need recycling here.
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
+        cell.selectionStyle = .none   // rows aren't tappable
+        
+        // Switch on (section, row) together, i.e. "tuple switching".
+        switch (indexPath.section, indexPath.row) {
+        case (0, 0):
+            cell.textLabel?.text = "Activity"
+            cell.detailTextLabel?.text = excuse.activity
+        case (0, 1):
+            cell.textLabel?.text = "Reason"
+            cell.detailTextLabel?.text = excuse.reason.rawValue
+        case (0, 2):
+            cell.textLabel?.text = "Date"
+            cell.detailTextLabel?.text = Self.dateFormatter.string(from: excuse.date)
+        case (1, 0):
+            cell.textLabel?.text = "Validity"
+            cell.detailTextLabel?.text = "\(excuse.validity)/10"
+        default:
+            break   // required by Swift: "what if it's none of the above?"
+        }
         return cell
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

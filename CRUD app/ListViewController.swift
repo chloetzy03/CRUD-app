@@ -11,8 +11,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     private var excuses: [Excuse] = [
         Excuse(activity: "Gym", reason: .tired, validity: 3),
-        Excuse(activity: "Finish report", reason: .tired, validity: 1),
+        Excuse(activity: "Finish report", reason: .busy, validity: 2),
         Excuse(activity: "Run", reason: .tired, validity: 7),
+        Excuse(activity: "Frisbee", reason: .lazy, validity: 1)
     ]
     
     private let tableView = UITableView()
@@ -69,6 +70,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     // MARK: - UITableViewDataSource
+    //implement numberOfRowsInSection
     // Q: "How many rows?"  A: one per excuse
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         excuses.count
@@ -105,10 +107,18 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //MARK: - UITableViewDelegate
     // Called when a row is tapped
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            tableView.deselectRow(at: indexPath, animated: true)   // remove the grey highlight
-            // Step 5: push the detail screen here.
-        }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)   // remove the grey highlight
+        
+        // 1. Find which excuse was tapped.
+        let selectedExcuse = excuses[indexPath.row]
+        
+        // 2. Create a detail screen and hand it that excuse.
+        let detailVC = ExcuseDetailViewController(excuse: selectedExcuse)
+        
+        // 3. Push it onto the navigation stack (slides in, with a back button for free).
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
     
     
 }
