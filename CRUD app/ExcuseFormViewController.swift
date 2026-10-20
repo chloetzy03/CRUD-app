@@ -62,13 +62,16 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
             action: #selector(cancelTapped)
         )
         //save on the right
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let saveButton = UIBarButtonItem(
             barButtonSystemItem: .save,
             target: self,
             action: #selector(saveTapped)
         )
+        saveButton.tintColor = .systemBlue
+        saveButton.style = .prominent
+        navigationItem.rightBarButtonItem = saveButton
         
-        activityTextField.placeholder = "e.g. Gym"   // grey hint text when empty
+        activityTextField.placeholder = "e.g. what are u avoiding again"   // grey hint text when empty
 
         // Picker: "I'm in charge of your data" (same idea as tableView.dataSource = self)
         reasonPicker.dataSource = self
@@ -86,9 +89,15 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
         // Date picker: wheel style, date only (no time).
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
+        datePicker.maximumDate = Date() //the latest selectable date is right now
 
         configureForEditing()
         
+        //dismisses the keyboard after clicking anywhere outside and when scrolling
+        tableView.keyboardDismissMode = .onDrag
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 
     //MARK: - setup
@@ -119,7 +128,9 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
     @objc private func saveTapped() {
         let activity = (activityTextField.text ?? "").trimmingCharacters(in: .whitespaces)
         guard !activity.isEmpty else {
-            print("Activity is empty")
+            let alert = UIAlertController(title: "Missing Activity", message: "Please enter what you didn't do", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default)) //one button to close it
+            present(alert, animated: true)
             return
         }
         
@@ -167,7 +178,7 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
         switch section {
         case 0: return "Activity"
         case 1: return "Reason"
-        case 2: return "Validity (how legit was it?)"
+        case 2: return "Validity (legit or not?)"
         default: return "Date"
         }
     }

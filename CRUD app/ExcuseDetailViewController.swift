@@ -32,6 +32,7 @@ class ExcuseDetailViewController: UITableViewController, ExcuseFormViewControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Details"
+        navigationItem.largeTitleDisplayMode = .never
         
         //edit button on the top right
         navigationItem.rightBarButtonItem = UIBarButtonItem(

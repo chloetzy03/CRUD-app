@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navController = UINavigationController(rootViewController: listVC)
         //Make the navigation controller the first thing shown.
         window?.rootViewController = navController
+        window?.tintColor = .systemGray
         //show the window
         window?.makeKeyAndVisible()
     }

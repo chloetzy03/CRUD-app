@@ -8,11 +8,11 @@ import Foundation
 
 //CaseIterable lets us ask for ALL cases as a list later (Reason.allCases), which we'll need to fill the picker on the form screen
 enum Reason: String, CaseIterable {
-    case tired = "Tired"
-    case busy = "Busy"
+    case tired = "Slept at 4am"
+    case busy = "No time lor"
     case lazy = "Lazy"
-    case weather = "Weather"
-    case other = "Other"
+    case weather = "PSI too high"
+    case other = "MRT break down"
 }
 
 

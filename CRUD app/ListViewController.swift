@@ -10,10 +10,10 @@ import UIKit
 class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ExcuseFormViewControllerDelegate{
 
     private var excuses: [Excuse] = [
-        Excuse(activity: "Gym", reason: .tired, validity: 3),
-        Excuse(activity: "Finish report", reason: .busy, validity: 2),
+        Excuse(activity: "Gym", reason: .weather, validity: 3),
+        Excuse(activity: "Finish report", reason: .other, validity: 2),
         Excuse(activity: "Run", reason: .tired, validity: 7),
-        Excuse(activity: "Frisbee", reason: .lazy, validity: 1)
+        Excuse(activity: "Training", reason: .lazy, validity: 1)
     ]
     
     private let tableView = UITableView()
@@ -21,7 +21,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        title = "Excuse Log"
+        title = "Bobian Log"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         
         setupNavigationBar()
         setupTableView()
@@ -39,11 +41,16 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     //MARK: - setup
     //adds the + button on the top right
     private func setupNavigationBar(){
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let addButton = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
             action: #selector(addButtonTapped)
         )
+        //color the + icon
+        addButton.tintColor = .systemBlue
+        addButton.style = .prominent
+        //put it on the top right
+        navigationItem.rightBarButtonItem = addButton
     }
     
     
