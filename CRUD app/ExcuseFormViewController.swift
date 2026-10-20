@@ -8,6 +8,19 @@
 import UIKit
 import Foundation
 
+//define the protocol
+protocol ExcuseFormViewControllerDelegate: AnyObject {
+    func didAddExcuse(_ excuse: Excuse)      // "a brand new excuse was saved"
+    func didUpdateExcuse(_ excuse: Excuse)   // "an existing excuse was changed"
+}
+
+// Default (empty) versions of both methods makes them optional: a screen only implements the one it needs
+// The list only cares about adding, the detail screen only about updating
+extension ExcuseFormViewControllerDelegate {
+    func didAddExcuse(_ excuse: Excuse) {}
+    func didUpdateExcuse(_ excuse: Excuse) {}
+}
+
 class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
     //MARK: - Properties
@@ -21,6 +34,9 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
     private let validityStepper = UIStepper() // +- buttons
     private let validityValueLabel = UILabel() //show stepper's number
     private let datePicker = UIDatePicker() //date wheel
+    
+    // add delegate property
+    weak var delegate: ExcuseFormViewControllerDelegate?
     
     //MARK: - initialisers
     // excuse: Excuse? = nil means: you may pass an excuse, or pass nothing (defaults to nil)
@@ -100,22 +116,32 @@ class ExcuseFormViewController: UITableViewController, UIPickerViewDataSource, U
         dismiss(animated: true)
     }
     
-    @objc private func saveTapped(){
-        //validate first, the activity can't be empty
-        // `?? ""` means: if text is nil, use an empty string instead
+    @objc private func saveTapped() {
         let activity = (activityTextField.text ?? "").trimmingCharacters(in: .whitespaces)
         guard !activity.isEmpty else {
             print("Activity is empty")
             return
         }
         
-        // Ask the picker which row is spinning-selected, then look up that Reason.
         let reason = Reason.allCases[reasonPicker.selectedRow(inComponent: 0)]
         let validity = Int(validityStepper.value)
         let date = datePicker.date
         
-        print("Save tapped:", activity, reason.rawValue, validity, date)
-        dismiss(animated: true)
+        if let excuse = excuse {
+            // EDITING: change the existing object's values directly
+            // its a class so the list and detail screens see the change too
+            excuse.activity = activity
+            excuse.reason = reason
+            excuse.validity = validity
+            excuse.date = date
+            delegate?.didUpdateExcuse(excuse)   // "?" = only if a delegate exists
+        } else {
+            // ADDING: build a brand new excuse and hand it over.
+            let newExcuse = Excuse(activity: activity, reason: reason, validity: validity, date: date)
+            delegate?.didAddExcuse(newExcuse)
+        }
+        
+        dismiss(animated: true)   // close the form
     }
     
     //runs when user taps on the stepper

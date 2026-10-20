@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
+class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ExcuseFormViewControllerDelegate{
 
     private var excuses: [Excuse] = [
         Excuse(activity: "Gym", reason: .tired, validity: 3),
@@ -25,7 +25,16 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         setupNavigationBar()
         setupTableView()
+        
     }
+    
+    //fix the refresh bug
+    //runs every time this screen is about to appear on the screen
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     
     //MARK: - setup
     //adds the + button on the top right
@@ -68,6 +77,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @objc private func addButtonTapped(){
         // No excuse passed -> the form is in "add" mode
         let formVC = ExcuseFormViewController()
+        formVC.delegate = self
         
         // Wrap in a navigation controller so the form gets its own top bar (Cancel/Save)
         let navController = UINavigationController(rootViewController: formVC)
@@ -75,6 +85,14 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // slide up modally over the current screen
         present(navController, animated: true)
     }
+    
+    // MARK: - ExcuseFormViewControllerDelegate
+    // Called by the form after adding.
+    func didAddExcuse(_ excuse: Excuse) {
+        excuses.append(excuse)    // 1. add to the data
+        tableView.reloadData()    // 2. tell the table to redraw (it asks numberOfRows/cellForRow again)
+    }
+    
     
     // MARK: - UITableViewDataSource
     //implement numberOfRowsInSection

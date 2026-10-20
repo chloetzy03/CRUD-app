@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ExcuseDetailViewController: UITableViewController {
+class ExcuseDetailViewController: UITableViewController, ExcuseFormViewControllerDelegate {
 
     //MARK: - properties
     private let excuse: Excuse
@@ -45,10 +45,18 @@ class ExcuseDetailViewController: UITableViewController {
     @objc func editTapped(){
         // Pass the excuse -> the form is in "edit" mode.
         let formVC = ExcuseFormViewController(excuse: excuse)
+        formVC.delegate = self
         let navController = UINavigationController(rootViewController: formVC)
         present(navController, animated: true)
     }
     
+    // MARK: - ExcuseFormViewControllerDelegate
+
+    // Called by the form after editing. The excuse object is already changed,
+    // so we just redraw this screen to show the new values.
+    func didUpdateExcuse(_ excuse: Excuse) {
+        tableView.reloadData()
+    }
     
     // MARK: - Table view data source
     // Two groups: "Information" and "Stats"
